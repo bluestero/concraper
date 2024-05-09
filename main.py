@@ -211,4 +211,4 @@ if __name__ == "__main__":
     #-Sample test code-#
     concraper = Concraper(search_limit = 10)
     text = concraper.get_from_search("best company india.")
-    text = concraper.get_from_file("lis.txt")
+    text = concraper.get_from_file("urls.txt")
