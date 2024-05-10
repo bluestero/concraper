@@ -15,3 +15,6 @@ It is a python script to query a google search and extract the contact info from
 11 - Add queue for file input.
 13 - Create query for the CSV.
 14 - Progress tracker (Loading bar of sorts).
+15 - Found text contained in span, p, and h3.
+16 - Add exception handling, and add the error in the failed csv.
+17 - Scrape socials by handling A tags and searching for domains.

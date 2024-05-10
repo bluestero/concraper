@@ -28,7 +28,7 @@ class Concraper:
         #-Regex patterns-#
         self.email_pattern = re.compile(r"[a-z0-9#%$*!][a-z0-9.#$!_%+-]+@[a-z0-9.-]+\.[a-z]{2,63}", flags = re.IGNORECASE)
         self.contact_pattern = lambda href, url : re.search(rf"{re.escape(url)}.*(?:contact|reach|support)", href, flags = re.IGNORECASE)
-        self.phone_pattern = re.compile(r"^\+?\d{1,4}[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}(?:,\+?\d{1,4}[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9})*$", flags = re.IGNORECASE)
+        self.phone_pattern = re.compile(r"\+\d{1,4}[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}(?:,\+?\d{1,4}[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9})*", flags = re.IGNORECASE)
 
 
     #-Function to fetch result urls from a googled query-#
@@ -46,6 +46,27 @@ class Concraper:
         with open(filepath, mode, newline = "", encoding = "utf-8") as file:
             writer = csv.writer(file)
             writer.writerow(row)
+
+
+    #-Function to extract contact info from the tag-#
+    def extract_from_tag(self, tags: list) -> tuple:
+
+        #-Base objects-#
+        all_emails = set()
+        all_phone_numbers = set()
+
+        #-Iterating the given list of tags-#
+        for tag in tags:
+
+            #-Converting the tag to string text-#
+            tag_text = str(tag)
+
+            #-Extracting the contact info using regex patterns and adding them to the main set-#
+            all_emails = all_emails.union(set(self.email_pattern.findall(tag_text)))
+            all_phone_numbers = all_phone_numbers.union(set(self.phone_pattern.findall(tag_text)))
+
+        #-Returning the extracted contact info-#
+        return all_emails, all_phone_numbers
 
 
     #-Function to extract urls from a given website-#
@@ -83,13 +104,8 @@ class Concraper:
                 all_emails.union(emails)
                 all_phone_numbers.union(phone_numbers)
 
-        #-Extracting the anchor tags with mailto and tel-#
-        emails = soup.find_all("a", href = lambda href: href and ("mailto:" in href))
-        phone_numbers = soup.find_all("a", href = lambda href: href and ("tel:" in href))
-
-        #-Extracting the required data from the tags-#
-        emails = {email["href"].split(":")[1].split("?")[0] for email in emails}
-        phone_numbers = {phone["href"] for phone in phone_numbers}
+        #-Extracting contact info from all the anchors with href-#
+        emails, phone_numbers = self.extract_from_tag(soup.find_all('a', href=lambda href: href and ('mailto:' in href or 'tel:' in href)))
 
         #-Storing them in the required format in a set-#
         all_emails = all_emails.union(emails)
@@ -154,7 +170,7 @@ class Concraper:
 
             #-Adding a counter for URLs processed-#
             if index > 0 and index % 10 == 0:
-                print(f"Processed URLs : {index + 1}.")
+                print(f"Processed URLs : {index}.")
 
 
     #-Function to cleanup after processing the urls-#
@@ -171,6 +187,7 @@ class Concraper:
         #-End time-#
         print(f"Script ended at : {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}.")
         print(f"Total time taken : {datetime.now() - self.start_time}.")
+
 
     #-Function to get contact info from searching a query-#
     def get_from_search(self, query: str) -> None:
@@ -210,5 +227,5 @@ if __name__ == "__main__":
 
     #-Sample test code-#
     concraper = Concraper(search_limit = 10)
-    text = concraper.get_from_search("best company india.")
-    text = concraper.get_from_file("urls.txt")
+    # text = concraper.get_from_search("best company india.")
+    text = concraper.get_from_file("list.txt")
