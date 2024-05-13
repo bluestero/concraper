@@ -198,7 +198,6 @@ class Concraper:
 
         #-Adding the contact info to our existing data-#
         all_info = {key: value.union(contact_dict[key]) for key, value in all_info.items() if key in contact_dict}
-        print(all_info)
 
         #-Creating a copy of the global patterns-#
         global_patterns = self.global_patterns.copy()
