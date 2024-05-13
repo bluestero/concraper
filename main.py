@@ -252,7 +252,7 @@ class Concraper:
             for email in emails:
 
                 #-Getting the domain of the url and email-#
-                url_domain = self.gen.generalize(self.url, keep_path = False)
+                url_domain = self.gen.generalize(self.url, get_domain_with_tld = True)
                 email_domain = email.split("@")[-1]
 
                 #-Adding the email to the emails set if domain matches-#
