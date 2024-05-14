@@ -1,8 +1,9 @@
 # What is concraper?
 - It is a python script which crawls websites to find and extract contact info such as email, phone, facebook, twitter, linkedin, instagram.
-- You can search a query and extract results from the searched URLs or provide an input file of URLs.
-- Now, it will visit the website, find related links where it can find contact data, visit them and extract them.
-- It searches for data using well-made regexes for identifying different patterns and combinations and to filter out bad urls as well.
+- It supports 2 modes of input:
+  - **Google query:** Can give an input query and search limit and scrape the searched websites for contact info.
+  - **Input file:** Can provide an input file with URLs and scape from them.
+- It searches based on priority, if find it from more accurate sources, will skip searching from less accurate ones.
 - All the scraped and processed data would then be stored inside 2 CSV Files: result and failed.
 
 # Setting up Dependencies
