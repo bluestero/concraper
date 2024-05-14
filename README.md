@@ -15,7 +15,7 @@ pip install -r requirements.txt
 # Running the code
 A small sample code would be to import the concraper and use any of the following input methods to run it:
 
-Using google search:
+## Using google search:
 
 ```code
 from concraper import Concraper
@@ -24,9 +24,9 @@ concraper = Concraper(search_limit = 10)
 concraper.get_from_search("best company india.")
 ```
 
-Using input file:
+## Using input file:
 
-Input.txt
+**Input.txt**
 ```bash
 http://www.mirantis.com
 http://www.hi-group.com
@@ -34,7 +34,7 @@ http://www.wyncorp.com.my
 http://www.racepointglobal.com
 ```
 
-Code:
+**Code:**
 ```
 from concraper import Concraper
 
