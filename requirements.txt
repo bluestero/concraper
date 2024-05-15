@@ -1,5 +1,7 @@
 lxml==5.2.2
+websockets==11.0
 requests==2.28.1
 tldextract==5.1.2
 beautifulsoup4==4.11.1
+botasaurus_driver==4.0.5
 googlesearch-python==1.2.4

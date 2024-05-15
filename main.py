@@ -7,6 +7,7 @@ from pathlib import Path
 from datetime import datetime
 from googlesearch import search
 from bs4 import BeautifulSoup as bs
+from botasaurus_driver import Driver
 
 #-Custom imports-#
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -25,7 +26,8 @@ class Concraper:
     def __init__(self, search_limit: int = 10, validate_result: bool = True) -> None:
 
         #-Base objects-#
-        self.headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.135 Safari/537.36 Edge/12.246"}
+        user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/117.0.0.0 Safari/537.36"
+        self.driver = Driver(headless = True, block_images_and_css = True, user_agent = user_agent)
         self.gen = UrlGeneralizer(bad_url = "Bad", bad_social = "Bad")
         self.script_dir = os.path.dirname(os.path.abspath(__file__))
         self.validate_result = validate_result
@@ -98,11 +100,11 @@ class Concraper:
 
         #-Base object-#
         all_info = {
-            "email": set(),
             "phone": set(),
+            "email": set(),
             "facebook": set(),
-            "linkedin": set(),
             "twitter": set(),
+            "linkedin": set(),
             "instagram": set(),
         }
 
@@ -131,14 +133,13 @@ class Concraper:
         #-Base objects-#
         soup_text = str(soup)
         all_info = {
-            "email": set(),
             "phone": set(),
+            "email": set(),
             "facebook": set(),
-            "linkedin": set(),
             "twitter": set(),
+            "linkedin": set(),
             "instagram": set(),
         }
-
         #-Iterating the dictionary containing different list of patterns-#
         for column, patterns in patterns_dict.items():
 
@@ -157,26 +158,26 @@ class Concraper:
 
         #-Base object-#
         all_info = {
-            "email": set(),
             "phone": set(),
+            "email": set(),
             "facebook": set(),
-            "linkedin": set(),
             "twitter": set(),
+            "linkedin": set(),
             "instagram": set(),
         }
 
         #-Getting the response and its content using try block-#
         try:
-            response = requests.get(self.url, headers = self.headers, timeout = 30)
-            soup = bs(response.content, "lxml")
+            self.driver.google_get(url, bypass_cloudflare = True)
+            soup = bs(self.driver.page_html, "lxml")
 
         #-Returning the error message-#
         except:
             return "Website unreachable."
 
         #-Returning if bad response-#
-        if not response.ok:
-            return response.status_code
+        if self.driver.title == self.gen.generalize(url, get_domain_with_tld = True):
+            return "Website unreachable."
 
         if crawl:
 
@@ -342,6 +343,9 @@ class Concraper:
 
     #-Function to cleanup after processing the urls-#
     def cleanup(self) -> None:
+
+        #-Closing the driver-#
+        self.driver.close()
 
         #-Removing the failed csv if no records-#
         if os.path.getsize(self.failed_file) < 15:
