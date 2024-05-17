@@ -33,7 +33,7 @@ def facebook_gen(url: str, subdomain: str, get_handle: bool, keep_periods: bool,
         handle = re.search(f"https://{subdomain}." + r"facebook.com(.br|.au)?/(/)?(#!/|#1/)?(pg/|watch/|groups/|events/|\.\.\./|pages/category/(photographer|journalist)/|home.php[#!\?]{1,3}/|\?[a-z_]{1,}=[a-z_#!?]{1,}/|pages/edit/\?id=\d+#!/|\?_rdr#!/)?@?[a-z0-9%.-]{1,50}(\/|\?|#|$|#|http|=)", url, re.IGNORECASE)
 
     if handle:
-        exceptions = ['profilephp', 'groupid', 'groups', 'people', 'pg', 'pages', 'homephp', 'public', 'events', 'watch', 'homephp!', 'media', 'dialog', 'help', 'search', 'sharer', 'sharerphp', 'login']
+        exceptions = ['profilephp', 'groupid', 'groups', 'people', 'pg', 'pages', 'homephp', 'public', 'events', 'watch', 'homephp!', 'media', 'dialog', 'help', 'search', 'sharer', 'sharerphp', 'login', '2008']
         handle = handle[0][:-1] if handle[0][-1] in ['/', '?', '#', '=', '&'] else handle[0]
         handle = handle[:-4].split('/') if handle[-4:] == 'http' else handle.split('/')
         subdir = handle[-2]
