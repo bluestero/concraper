@@ -1,17 +1,13 @@
 import os
 import re
 import csv
-import sys
-import requests
 from pathlib import Path
 from datetime import datetime
+from urlgenie import UrlGenie
 from googlesearch import search
 from bs4 import BeautifulSoup as bs
 from botasaurus_driver import Driver
 
-#-Custom imports-#
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from url_gen import UrlGeneralizer
 
 #-Custom exception-#
 class EmptyInputError(Exception):
@@ -28,7 +24,7 @@ class Concraper:
         #-Base objects-#
         user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/117.0.0.0 Safari/537.36"
         self.driver = Driver(headless = True, block_images_and_css = True, user_agent = user_agent)
-        self.gen = UrlGeneralizer(bad_url = "Bad", bad_social = "Bad")
+        self.genie = UrlGenie(bad_url = "Bad", bad_social = "Bad")
         self.script_dir = os.path.dirname(os.path.abspath(__file__))
         self.validate_result = validate_result
         self.search_limit = search_limit
@@ -176,7 +172,7 @@ class Concraper:
             return "Website unreachable."
 
         #-Returning if bad response-#
-        if self.driver.title == self.gen.generalize(url, get_domain_with_tld = True):
+        if self.driver.title == self.genie.generalize(url, get_domain_with_tld = True):
             return "Website unreachable."
 
         if crawl:
@@ -253,7 +249,7 @@ class Concraper:
             for email in emails:
 
                 #-Getting the domain of the url and email-#
-                url_domain = self.gen.generalize(self.url, get_domain_with_tld = True)
+                url_domain = self.genie.generalize(self.url, get_domain_with_tld = True)
                 email_domain = email.split("@")[-1]
 
                 #-Adding the email to the emails set if domain matches-#
@@ -273,7 +269,7 @@ class Concraper:
             for social in socials:
 
                 #-Generalizing the url-#
-                url = self.gen.generalize(social)
+                url = self.genie.generalize(social)
 
                 #-Adding the social to valid socials set if valid-#
                 if url != "Bad":
